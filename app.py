@@ -20,7 +20,21 @@ def root():
 
 @app.route('/users')
 def user_index():
+    """Shows page with all users info"""
 
     users = User.query.order_by(User.last_name, User.first_name).all()
     return render_template('users/index.html', users=users)
 
+@app.route('/users/new', methods=["POST"])
+def new_users():
+    """Makes a new user"""
+
+    new_user = User(
+        first_name=request.form['first_name'],
+        last_name=request.form['last_name'],
+        image_url=request.form['image_url'] or None)
+    
+    db.session.add(new_user)
+    db.session.commit()
+
+    return redirect("/users")
